@@ -4,15 +4,42 @@
 <polymer-element name="x-word" attributes='size'>
 <template>
   <link rel='stylesheet' href="en.css">
-  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Droid+Sans+Mono:700,400,300">
    <div id='ctx'>
   	<input id='i' type='input' value=''>
   </div>
 </template>
 <script>
+(function(){
+	var speech = new SpeechSynthesisUtterance();
+	var voices = window.speechSynthesis.getVoices();
+    speech.lang = 'en';
+	speech.accent = 'en-US';
+	speech.default = false;
+	speech.rate = 1;
+	speech.pitch = 0.5;
+	speech.voice = voices.filter(
+		function(voice) { return voice.name == 'Google UK English Female'; })[0];
+
+	function _speak(words){
+		if(words){
+			speech.text = words;
+			window.speechSynthesis.speak(speech);
+		}
+	}
+
 	Polymer({
-		size: 52,
+		size: 32,
+		speak:function(){
+			_speak(this.word);
+		},
 		ready:function(){
+			$(this.$.ctx).css({
+				'transition-duration':'1s',
+				'margin': '4px 3px 4px 3px'
+			});
+			$(this.$.i).css({
+				'transition-duration':'1s'
+			});
 		},
 		attached: function () {
 			this.word = this.innerHTML;
@@ -37,38 +64,41 @@
 					self.focusNext();
 				} else if(val.length==0 && e.keyCode==8){
 					self.focusPrev();
+				} else if(e.keyCode==188){
+					self.$.i.value = val.replace(/,/g,'');
 				}
 			});
 		},
 		verify:function(){
-			if(this.word === this.$.i.value){
+			if(this.word.length === this.$.i.value.length){
+				if(this.word === this.$.i.value){
 					this.repaceEle();
+					$(this.$.ctx).css({'background-color':'#fff'});
+					this.setAttribute('ok','');
+				}else {
+					$(this.$.i).css({'background-color':'#faa'});
+					this.setAttribute('err','');
+				}
 			}
 		},
 		repaceEle:function(){
 			this.$.i.parentNode.removeChild(this.$.i);
 			var txt = document.createTextNode(this.word);
 			this.$.ctx.appendChild(txt);
-			$(this.$.ctx).css({
-				'transition-duration':'1s',
-				'background-color':'#fff',
-				'margin': '4px 3px 4px 3px'
-				});
-			this.setAttribute('done','');
 		},
 		focus:function(){
-			if(this.getAttribute('done')!=null){
+			if(this.getAttribute('ok')!=null){
 				this.focusNext();
 			};
 			this.$.i.focus();
 		},
 		focusNext:function(){
-			console.log('next',$(this).next('x-word'));
 			$(this).next('x-word').focus();
 		},
 		focusPrev:function(){
 			$(this).prev('x-word').focus();
 		}
 	});
+})();
 </script>
 </polymer-element>

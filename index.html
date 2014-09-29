@@ -1,31 +1,29 @@
 <html>
 	<head>
 		<script src="bower_components/platform/platform.js"></script>
-		<link rel="import" href="bower_components/voice-elements/dist/voice-player.html">
-		<link rel="import" href="bower_components/core-tooltip/core-tooltip.html">
-		<link rel="import" href="x-word.html">
 		<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Droid+Sans+Mono:700,400,300">
+		<link rel="import" href="x-word.html">
+		<style>
+		body{
+			font: 52px/1.3 'Droid Sans Mono', sans-serif;
+		}
 		</style>
 		<script src="jquery-2.1.1.min.js"></script>
 	</head>
 	<body>
 
-	<div horizontal layout center>
-		<x-word>test</x-word>
-		<x-word>by</x-word>
-		<x-word>Marty</x-word>
-	</div>
-	<div horizontal layout center>
-		<x-word>test</x-word>
-		<x-word>by</x-word>
-		<x-word>Marty</x-word>
-	</div>
+	<div id='cn'></div>
+	<div id='en' horizontal layout></div>
 
 	<script>
-	function x(){
-		$('x-word')[0].focus();
-	}
-	setTimeout(x,500);
+		var test = ['這是一本書','this is a book'];
+		$('#cn').html(test[0]);
+		var words = test[1].split(' ');
+		$.each(words,function(idx,word){
+			$('#en').append('<x-word>'+word+'</x-word>');
+		});
+		setTimeout("$('x-word')[0].focus()");
+		//words.length == $('x-word[ok]').length
 	</script>
 	</body>
 
