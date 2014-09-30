@@ -71,14 +71,17 @@
 		},
 		verify:function(){
 			if(this.word.length === this.$.i.value.length){
+				var state = "";
 				if(this.word === this.$.i.value){
 					this.repaceEle();
 					$(this.$.ctx).css({'background-color':'#fff'});
-					this.setAttribute('ok','');
+					state = "ok";
 				}else {
 					$(this.$.i).css({'background-color':'#faa'});
-					this.setAttribute('err','');
+					state = "err";
 				}
+				this.setAttribute(state,'');
+				this.fire('x-word-check',state);
 			}
 		},
 		repaceEle:function(){
